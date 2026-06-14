@@ -1,6 +1,6 @@
 # Contributing
 
-感谢关注这个项目。这个仓库定位为一个可复现、可讲解、可扩展的科研文献 RAG 工程样例，因此贡献优先关注三类价值：
+感谢关注这个项目。这个仓库定位为一个可复现、可扩展的科研文献 RAG 工程样例，因此贡献优先关注三类价值：
 
 - 提升检索、生成、评测的可解释性。
 - 提升本地启动、Docker、CI 的可复现性。
@@ -29,7 +29,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8010 --reload
 .\scripts\check.ps1
 ```
 
-该脚本会运行开源发布审计、Ruff 和 Pytest。没有 Docker 环境时，可以只运行：
+该脚本会运行仓库审计、Ruff 和 Pytest。没有 Docker 环境时，可以只运行：
 
 ```powershell
 python scripts/open_source_audit.py
@@ -46,4 +46,4 @@ python -m pytest
 
 ## 代码风格
 
-项目使用 Ruff 做基础检查，Python 目标版本为 3.13。代码应尽量保持简单清晰，避免为了展示技术栈而引入不必要抽象。
+项目使用 Ruff 做基础检查，Python 目标版本为 3.13。代码应尽量保持简单清晰，避免引入不必要抽象。
