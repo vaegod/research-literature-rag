@@ -1,0 +1,15 @@
+name: research-literature-rag
+
+services:
+  research-literature-rag:
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - "8010:8010"
+    volumes:
+      - ./data/raw_docs:/app/data/raw_docs
+      - ./data/processed_docs:/app/data/processed_docs
+      - ./vector_store/faiss_index:/app/vector_store/faiss_index
+    restart: unless-stopped

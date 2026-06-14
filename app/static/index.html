@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>科研文献智能问答</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="rail" aria-label="系统控制">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">R</div>
+          <div>
+            <h1>科研文献智能问答</h1>
+            <p>Agentic RAG Console</p>
+          </div>
+        </div>
+
+        <section class="panel compact">
+          <div class="section-title">
+            <span>服务状态</span>
+            <button class="icon-btn" id="refreshHealth" title="刷新状态" aria-label="刷新状态">↻</button>
+          </div>
+          <div class="status-row">
+            <span class="status-dot" id="healthDot"></span>
+            <span id="healthText">检查中</span>
+          </div>
+          <a class="quiet-link" href="/docs" target="_blank" rel="noreferrer">打开 Swagger</a>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <span>知识库</span>
+            <span class="mini-label">PDF / MD / TXT</span>
+          </div>
+          <label class="file-pick">
+            <input id="fileInput" type="file" accept=".pdf,.md,.markdown,.txt" />
+            <span id="fileLabel">选择文档</span>
+          </label>
+          <button class="primary" id="uploadBtn">上传文档</button>
+          <button class="secondary" id="buildBtn">手动重建索引</button>
+          <p class="hint" id="knowledgeHint">文档增删改后会自动同步索引。</p>
+        </section>
+
+        <section class="panel compact">
+          <div class="section-title">
+            <span>评测</span>
+            <span class="mini-label">Smoke</span>
+          </div>
+          <div class="inline-control">
+            <label for="evalLimit">样本数</label>
+            <input id="evalLimit" type="number" min="1" max="30" value="5" />
+          </div>
+          <button class="secondary" id="evalBtn">运行评测</button>
+        </section>
+      </aside>
+
+      <section class="workspace" aria-label="问答工作区">
+        <div class="workspace-head">
+          <div>
+            <p class="eyebrow">Research Desk</p>
+            <h2>检索、问答、对比与实验查询</h2>
+          </div>
+          <div class="mode-switch" role="tablist" aria-label="问答模式">
+            <button class="mode active" data-mode="agent">Agent</button>
+            <button class="mode" data-mode="rag">RAG</button>
+            <button class="mode" data-mode="search">检索</button>
+          </div>
+        </div>
+
+        <form class="query-box" id="queryForm">
+          <textarea
+            id="questionInput"
+            rows="5"
+            placeholder="例如：对比 LoRA 和知识蒸馏的区别。"
+          ></textarea>
+          <div class="query-actions">
+            <div class="inline-control topk">
+              <label for="topK">TopK</label>
+              <input id="topK" type="number" min="1" max="20" value="4" />
+            </div>
+            <label class="toggle">
+              <input id="streamToggle" type="checkbox" checked />
+              <span>流式</span>
+            </label>
+            <button class="primary run" type="submit">发送</button>
+          </div>
+        </form>
+
+        <section class="answer-surface" aria-live="polite">
+          <div class="answer-meta">
+            <span id="resultMode">等待提问</span>
+            <span id="latency">0.00s</span>
+          </div>
+          <div id="answer" class="answer-text">问题提交后，答案会显示在这里。</div>
+        </section>
+      </section>
+
+      <aside class="inspector" aria-label="知识库、引用与评测">
+        <section class="library-surface" aria-label="知识库管理">
+          <div class="library-head">
+            <div>
+              <p class="eyebrow dark">Knowledge Library</p>
+              <h3>源文档与切分片段</h3>
+            </div>
+            <div class="library-actions">
+              <button class="secondary small" id="refreshDocsBtn">刷新</button>
+              <button class="secondary small" id="allChunksBtn">全部片段</button>
+            </div>
+          </div>
+
+          <div class="library-layout">
+            <div class="doc-column">
+              <div id="docList" class="doc-list empty">正在读取文档列表...</div>
+            </div>
+            <div class="editor-column">
+              <div class="editor-toolbar">
+                <input id="docFilename" type="text" placeholder="new_note.md" />
+                <div class="editor-actions">
+                  <button class="secondary small" id="newDocBtn">新增</button>
+                  <button class="primary small" id="saveDocBtn">保存</button>
+                  <button class="danger small" id="deleteDocBtn">删除</button>
+                </div>
+              </div>
+              <textarea
+                id="docEditor"
+                class="doc-editor"
+                rows="8"
+                placeholder="选择 Markdown/TXT 文档后可在这里编辑；PDF 仅支持上传替换。"
+              ></textarea>
+              <div class="chunk-toolbar">
+                <input id="chunkQuery" type="text" placeholder="过滤 chunk，例如 LoRA" />
+                <button class="secondary small" id="filterChunksBtn">过滤</button>
+              </div>
+              <div id="libraryChunks" class="library-chunks empty">选择文档或点击“全部片段”。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel stretch">
+          <div class="section-title">
+            <span>引用来源</span>
+            <span class="mini-label" id="sourceCount">0</span>
+          </div>
+          <div id="sources" class="source-list empty">暂无引用。</div>
+        </section>
+
+        <section class="panel stretch">
+          <div class="section-title">
+            <span>相关片段</span>
+            <span class="mini-label" id="chunkCount">0</span>
+          </div>
+          <div id="chunks" class="chunk-list empty">暂无片段。</div>
+        </section>
+
+        <section class="panel stretch">
+          <div class="section-title">
+            <span>检索调试</span>
+            <span class="mini-label">rank trace</span>
+          </div>
+          <div id="retrievalDebug" class="debug-list empty">暂无检索链路。</div>
+        </section>
+
+        <section class="panel compact">
+          <div class="section-title">
+            <span>运行日志</span>
+            <button class="icon-btn" id="clearLog" title="清空日志" aria-label="清空日志">×</button>
+          </div>
+          <div id="log" class="log"></div>
+        </section>
+      </aside>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

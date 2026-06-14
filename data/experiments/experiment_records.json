@@ -1,0 +1,67 @@
+[
+  {
+    "experiment_id": "EXP-001",
+    "task": "文本分类",
+    "dataset": "SST-5",
+    "teacher_model": "Qwen2.5-14B-Instruct",
+    "student_model": "Qwen2.5-0.5B-Instruct",
+    "method": "Hard-label LoRA",
+    "metric": {
+      "accuracy": 0.486,
+      "macro_f1": 0.451
+    },
+    "conclusion": "硬标签 LoRA 能快速适配任务，但对边界类别区分不足。"
+  },
+  {
+    "experiment_id": "EXP-002",
+    "task": "文本分类",
+    "dataset": "SST-5",
+    "teacher_model": "Qwen2.5-14B-Instruct",
+    "student_model": "Qwen2.5-0.5B-Instruct",
+    "method": "LoRA + Knowledge Distillation",
+    "metric": {
+      "accuracy": 0.514,
+      "macro_f1": 0.487
+    },
+    "conclusion": "类别难度差异较大，低资源类别表现不稳定，但整体优于硬标签基线。"
+  },
+  {
+    "experiment_id": "EXP-003",
+    "task": "文本分类",
+    "dataset": "AG-NEWS",
+    "teacher_model": "Qwen2.5-14B-Instruct",
+    "student_model": "Qwen2.5-0.5B-Instruct",
+    "method": "Category-adaptive KD",
+    "metric": {
+      "accuracy": 0.902,
+      "macro_f1": 0.899
+    },
+    "conclusion": "类别自适应温度在类别难度不均衡任务中更稳定。"
+  },
+  {
+    "experiment_id": "EXP-004",
+    "task": "RAG 问答",
+    "dataset": "科研文献样例集",
+    "teacher_model": "deepseek-ai/DeepSeek-V3",
+    "student_model": "N/A",
+    "method": "FAISS TopK Retrieval",
+    "metric": {
+      "source_hit_rate": 0.82,
+      "keyword_hit_rate": 0.76
+    },
+    "conclusion": "TopK=4 能覆盖多数问题，但多文档对比问题需要更高召回或 rerank。"
+  },
+  {
+    "experiment_id": "EXP-005",
+    "task": "RAG 问答",
+    "dataset": "科研文献样例集",
+    "teacher_model": "deepseek-ai/DeepSeek-V3",
+    "student_model": "N/A",
+    "method": "Prompt with citation constraint",
+    "metric": {
+      "source_hit_rate": 0.86,
+      "keyword_hit_rate": 0.81
+    },
+    "conclusion": "加入引用来源和资料不足约束后，回答可追溯性更好。"
+  }
+]

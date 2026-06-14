@@ -1,0 +1,23 @@
+id,question,expected_source,expected_keywords,intent,expected_chunk_ids
+1,知识蒸馏的核心思想是什么,knowledge_distillation_survey.md,教师模型;学生模型;软标签,literature_qa,knowledge_distillation_survey_chunk_0001
+2,知识蒸馏中的温度系数有什么作用,knowledge_distillation_survey.md,温度;平滑;概率分布,literature_qa,knowledge_distillation_survey_chunk_0001
+3,知识蒸馏适合哪些部署场景,knowledge_distillation_survey.md,资源有限;推理成本;小模型,literature_qa,knowledge_distillation_survey_chunk_0001
+4,知识蒸馏可能有什么局限,knowledge_distillation_survey.md,教师模型;偏差;类别不均衡,literature_qa,knowledge_distillation_survey_chunk_0001
+5,LoRA 为什么能减少训练参数,lora_finetuning_notes.md,低秩矩阵;冻结;参数量,literature_qa,lora_finetuning_notes_chunk_0001
+6,LoRA 的工程价值是什么,lora_finetuning_notes.md,显存;适配器;迭代成本,literature_qa,lora_finetuning_notes_chunk_0001
+7,LoRA 的秩 r 会影响什么,lora_finetuning_notes.md,秩;表达能力;过拟合,literature_qa,lora_finetuning_notes_chunk_0001
+8,对比 LoRA 和知识蒸馏的区别,knowledge_distillation_survey.md|lora_finetuning_notes.md,适配任务;能力迁移;学生模型,paper_compare,knowledge_distillation_survey_chunk_0001;lora_finetuning_notes_chunk_0001
+9,LoRA 和知识蒸馏能不能结合使用,lora_finetuning_notes.md|knowledge_distillation_survey.md,软标签;LoRA;学生模型,paper_compare,lora_finetuning_notes_chunk_0001;knowledge_distillation_survey_chunk_0001
+10,RAG 的基本流程是什么,rag_for_llm_applications.md,文档解析;Embedding;检索,literature_qa,rag_for_llm_applications_chunk_0001
+11,RAG 为什么要返回引用来源,rag_for_llm_applications.md,幻觉;可追溯;引用,literature_qa,rag_for_llm_applications_chunk_0001
+12,chunk_size 太小或太大会怎样,rag_for_llm_applications.md,上下文;检索精度;Prompt 成本,literature_qa,rag_for_llm_applications_chunk_0001
+13,RAG 检索可以怎么优化,rag_for_llm_applications.md,混合检索;rerank;query rewrite,literature_qa,rag_for_llm_applications_chunk_0001
+14,帮我生成 RAG 应用开发笔记的阅读笔记,rag_for_llm_applications.md,研究背景;核心流程;评测方法,note_generation,rag_for_llm_applications_chunk_0001;rag_for_llm_applications_chunk_0002
+21,RAG 评测常用哪些指标,rag_for_llm_applications.md,来源命中率;关键词覆盖率;响应耗时,literature_qa,rag_for_llm_applications_chunk_0002
+23,查询 EXP-001 的实验结果,experiment_records.json,SST-5;Hard-label LoRA;accuracy,experiment_query,
+24,查询 EXP-002 的实验结果,experiment_records.json,SST-5;Knowledge Distillation;macro_f1,experiment_query,
+25,查询 EXP-003 的实验结果,experiment_records.json,AG-NEWS;Category-adaptive KD;0.902,experiment_query,
+26,查询 RAG 问答实验的效果,experiment_records.json,source_hit_rate;keyword_hit_rate;FAISS,experiment_query,
+27,帮我生成知识蒸馏综述的阅读笔记,knowledge_distillation_survey.md,研究背景;核心方法;局限性,note_generation,knowledge_distillation_survey_chunk_0001
+29,比较 LoRA 微调和 RAG 应用开发关注点,lora_finetuning_notes.md|rag_for_llm_applications.md,训练成本;检索;外部知识库,paper_compare,lora_finetuning_notes_chunk_0001;rag_for_llm_applications_chunk_0001
+30,你是谁,general_chat,科研文献智能问答助手;文献问答;实验查询,general_chat,
