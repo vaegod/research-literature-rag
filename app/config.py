@@ -76,6 +76,18 @@ class Settings:
     reranker_max_chars: int
     reranker_timeout_seconds: float
     trust_local_faiss_index: bool
+    mineru_parser_enabled: bool
+    mineru_api_token: str
+    mineru_api_base_url: str
+    mineru_model_version: str
+    mineru_language: str
+    mineru_enable_ocr: bool
+    mineru_enable_table: bool
+    mineru_enable_formula: bool
+    mineru_timeout_seconds: float
+    mineru_poll_interval_seconds: float
+    mineru_cache_path: Path
+    mineru_fallback_to_pypdf: bool
 
     @property
     def has_api_key(self) -> bool:
@@ -126,6 +138,18 @@ def get_settings() -> Settings:
         reranker_max_chars=_int_from_env("RERANKER_MAX_CHARS", 1800),
         reranker_timeout_seconds=_float_from_env("RERANKER_TIMEOUT_SECONDS", 30.0),
         trust_local_faiss_index=_bool_from_env("TRUST_LOCAL_FAISS_INDEX", True),
+        mineru_parser_enabled=_bool_from_env("MINERU_PARSER_ENABLED", False),
+        mineru_api_token=os.getenv("MINERU_API_TOKEN", "").strip(),
+        mineru_api_base_url=os.getenv("MINERU_API_BASE_URL", "https://mineru.net").rstrip("/"),
+        mineru_model_version=os.getenv("MINERU_MODEL_VERSION", "vlm").strip() or "vlm",
+        mineru_language=os.getenv("MINERU_LANGUAGE", "ch").strip() or "ch",
+        mineru_enable_ocr=_bool_from_env("MINERU_ENABLE_OCR", False),
+        mineru_enable_table=_bool_from_env("MINERU_ENABLE_TABLE", True),
+        mineru_enable_formula=_bool_from_env("MINERU_ENABLE_FORMULA", True),
+        mineru_timeout_seconds=_float_from_env("MINERU_TIMEOUT_SECONDS", 600.0),
+        mineru_poll_interval_seconds=_float_from_env("MINERU_POLL_INTERVAL_SECONDS", 5.0),
+        mineru_cache_path=_path_from_env("MINERU_CACHE_PATH", "data/processed_docs/mineru_cache"),
+        mineru_fallback_to_pypdf=_bool_from_env("MINERU_FALLBACK_TO_PYPDF", True),
     )
 
 
@@ -135,6 +159,7 @@ def ensure_data_directories(settings: Settings | None = None) -> None:
         settings.raw_docs_path,
         settings.processed_docs_path,
         settings.vector_store_path,
+        settings.mineru_cache_path,
         settings.experiment_records_path.parent,
         settings.eval_questions_path.parent,
         settings.eval_result_path.parent,

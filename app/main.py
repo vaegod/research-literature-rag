@@ -40,6 +40,10 @@ def health_check() -> HealthResponse:
         service="research-literature-rag-agent",
         version=settings.app_version,
         has_api_key=settings.has_api_key,
+        pdf_parser="mineru" if settings.mineru_parser_enabled else "pypdf",
+        mineru_enabled=settings.mineru_parser_enabled,
+        mineru_has_token=bool(settings.mineru_api_token),
+        mineru_model_version=settings.mineru_model_version,
         **knowledge_status,
     )
 

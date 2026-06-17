@@ -10,6 +10,10 @@ class HealthResponse(BaseModel):
     service: str
     version: str
     has_api_key: bool = False
+    pdf_parser: str = "pypdf"
+    mineru_enabled: bool = False
+    mineru_has_token: bool = False
+    mineru_model_version: str = ""
     index_exists: bool = False
     raw_doc_count: int = 0
     chunk_count: int = 0

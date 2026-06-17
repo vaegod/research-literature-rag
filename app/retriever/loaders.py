@@ -3,7 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from app.config import get_settings
+from app.retriever.mineru_client import MinerUError, parse_pdf_with_mineru
 from app.utils.file_utils import SUPPORTED_EXTENSIONS
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 try:
     from langchain_core.documents import Document
@@ -50,6 +55,19 @@ def load_single_document(path: Path) -> list[Document]:
 
 
 def _load_pdf(path: Path) -> list[Document]:
+    settings = get_settings()
+    if settings.mineru_parser_enabled:
+        try:
+            return parse_pdf_with_mineru(path, settings)
+        except MinerUError:
+            if not settings.mineru_fallback_to_pypdf:
+                raise
+            logger.exception("MinerU parsing failed for %s; falling back to pypdf.", path)
+
+    return _load_pdf_with_pypdf(path)
+
+
+def _load_pdf_with_pypdf(path: Path) -> list[Document]:
     from pypdf import PdfReader
 
     reader = PdfReader(str(path))

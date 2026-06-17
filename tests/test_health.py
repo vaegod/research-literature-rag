@@ -9,6 +9,8 @@ def test_health() -> None:
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
     assert response.json()["service"] == "research-literature-rag-agent"
+    assert "pdf_parser" in response.json()
+    assert "mineru_has_token" in response.json()
 
 
 def test_frontend_home() -> None:

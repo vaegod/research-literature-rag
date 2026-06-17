@@ -165,6 +165,31 @@ button {
   box-shadow: 0 0 0 6px rgba(163, 71, 36, 0.12);
 }
 
+.parser-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  margin-top: 8px;
+  padding: 4px 9px;
+  border: 1px solid #cfc4ad;
+  color: var(--muted);
+  background: #fffaf0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.parser-badge.active {
+  border-color: rgba(30, 107, 79, 0.36);
+  color: var(--green);
+  background: var(--green-2);
+}
+
+.parser-badge.warn {
+  border-color: rgba(163, 71, 36, 0.36);
+  color: var(--rust);
+  background: #f8e4d8;
+}
+
 .quiet-link {
   display: inline-block;
   margin-top: 8px;

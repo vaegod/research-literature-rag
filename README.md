@@ -154,6 +154,10 @@ DEFAULT_TOP_K=4
 CHUNK_SIZE=800
 CHUNK_OVERLAP=120
 MAX_UPLOAD_SIZE_MB=20
+MINERU_PARSER_ENABLED=false
+MINERU_API_TOKEN=your_mineru_api_token
+MINERU_MODEL_VERSION=vlm
+MINERU_ENABLE_OCR=false
 RETRIEVAL_MODE=hybrid
 ENABLE_RERANKER=false
 RERANKER_MODEL=BAAI/bge-reranker-v2-m3
@@ -162,6 +166,8 @@ TRUST_LOCAL_FAISS_INDEX=true
 ```
 
 默认使用本地 BM25 + FAISS dense 混合召回。需要调用硅基流动 rerank API 时，将 `.env` 中的 `ENABLE_RERANKER` 设为 `true`，默认 reranker 模型为 `BAAI/bge-reranker-v2-m3`。
+
+默认 PDF 解析使用本地 `pypdf`。需要接入 MinerU 精准解析 API 时，将 `.env` 中的 `MINERU_PARSER_ENABLED` 设为 `true`，并填入 `MINERU_API_TOKEN`。开启后，PDF 会先调用 MinerU 解析表格、公式和 OCR 内容，解析结果缓存到 `MINERU_CACHE_PATH`，再进入原有 chunk、Embedding 和 FAISS 流程。
 
 `TRUST_LOCAL_FAISS_INDEX=true` 表示只加载本项目在本机生成的 FAISS 索引。不要加载陌生来源的 `index.pkl`。
 
@@ -230,7 +236,7 @@ Web 控制台默认位于 `http://127.0.0.1:8010/`，包含三块主要区域：
 
 ## RAG 与 Agent 流程
 
-1. 文档加载：PDF 通过 `pypdf` 提取页级文本，Markdown/TXT 直接读取。
+1. 文档加载：PDF 默认通过 `pypdf` 提取页级文本；开启 `MINERU_PARSER_ENABLED=true` 后优先调用 MinerU 解析并缓存结果，Markdown/TXT 直接读取。
 2. 文本切分：使用 `RecursiveCharacterTextSplitter`，按标题、段落、句号、逗号和空格递归切分，默认 `chunk_size=800`、`chunk_overlap=120`。
 3. 元数据增强：为 chunk 注入 `source`、`page`、`doc_id`、`chunk_id`、`section` 等字段。
 4. 向量化：调用 OpenAI 兼容 Embedding 接口，将 chunk 转成向量。

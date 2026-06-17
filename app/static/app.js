@@ -199,16 +199,23 @@ function renderChunks(chunks = []) {
   target.innerHTML = chunks
     .map((chunk) => {
       const score = typeof chunk.score === "number" ? `score=${chunk.score.toFixed(3)}` : "";
+      const parser = formatParser(chunk.metadata || {});
       const text = escapeHtml(chunk.content || "").slice(0, 420);
       return `<div class="chunk-item"><mark>${escapeHtml(chunk.source || "unknown")}</mark> ${escapeHtml(
         score
-      )}<br>${text}</div>`;
+      )} · parser=${escapeHtml(parser)}<br>${text}</div>`;
     })
     .join("");
 }
 
 function formatScore(value) {
   return typeof value === "number" ? value.toFixed(3) : "n/a";
+}
+
+function formatParser(metadata = {}) {
+  if (metadata.parser) return metadata.parser;
+  if (metadata.file_type === "pdf") return "pypdf";
+  return metadata.file_type || "text";
 }
 
 function renderRetrievalDebug(chunks = []) {
@@ -267,9 +274,25 @@ async function checkHealth() {
     const indexStatus = data.index_exists ? `${data.chunk_count} chunks` : "索引未构建";
     const keyStatus = data.has_api_key ? "Key 已配置" : "Key 未配置";
     text.textContent = `${data.status} · ${data.raw_doc_count} docs · ${indexStatus} · ${keyStatus}`;
+    const parserBadge = $("#parserBadge");
+    const parser = data.pdf_parser || "pypdf";
+    const mineruReady = data.mineru_enabled && data.mineru_has_token;
+    const parserText =
+      parser === "mineru"
+        ? `PDF 解析器：MinerU ${data.mineru_model_version || ""}`.trim()
+        : "PDF 解析器：pypdf";
+    parserBadge.textContent =
+      data.mineru_enabled && !data.mineru_has_token
+        ? "PDF 解析器：MinerU 未配置 Token"
+        : parserText;
+    parserBadge.className = `parser-badge${mineruReady ? " active" : ""}${
+      data.mineru_enabled && !data.mineru_has_token ? " warn" : ""
+    }`;
   } catch (error) {
     dot.className = "status-dot bad";
     text.textContent = "服务异常";
+    $("#parserBadge").textContent = "PDF 解析器：状态未知";
+    $("#parserBadge").className = "parser-badge warn";
   }
 }
 
@@ -495,10 +518,11 @@ function renderLibraryChunks(chunks = [], total = 0) {
     .map((chunk) => {
       const id = chunk.chunk_id || "chunk";
       const page = chunk.page ? `page=${chunk.page}` : "page=unknown";
+      const parser = formatParser(chunk.metadata || {});
       const text = escapeHtml(chunk.content || "").slice(0, 520);
       return `<div class="library-chunk"><strong>${escapeHtml(chunk.source)}</strong> · ${escapeHtml(
         id
-      )} · ${escapeHtml(page)}<br>${text}</div>`;
+      )} · ${escapeHtml(page)} · parser=${escapeHtml(parser)}<br>${text}</div>`;
     })
     .join("");
   addLog(`已加载 ${chunks.length}/${total} 个 chunk。`);
